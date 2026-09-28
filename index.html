@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Durga Puja 2026 Pandal Tracker</title>
+<style>
+  :root{
+    --red:#9b1b30;
+    --gold:#d4a017;
+    --gold-light:#f5e6c8;
+    --bg:#fff8ee;
+    --text:#3a2418;
+    --card:#ffffff;
+    --green:#2e7d32;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-bottom:60px;
+  }
+  header{
+    background:linear-gradient(135deg,var(--red),#5c0f1c);
+    color:#fff;
+    padding:24px 16px 20px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  }
+  header h1{
+    margin:0 0 6px;
+    font-size:1.6rem;
+    letter-spacing:0.5px;
+  }
+  header p{
+    margin:4px 0;
+    font-size:0.9rem;
+    opacity:0.9;
+  }
+  .countdowns{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin-top:10px;
+    flex-wrap:wrap;
+  }
+  .countdown-box{
+    background:rgba(255,255,255,0.15);
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:10px;
+    padding:6px 12px;
+    font-size:0.8rem;
+  }
+  .countdown-box b{
+    display:block;
+    font-size:1.1rem;
+    color:var(--gold-light);
+  }
+  .progress-wrap{
+    max-width:900px;
+    margin:16px auto 0;
+    padding:0 16px;
+  }
+  .progress-bar-outer{
+    background:#eee2c8;
+    border-radius:20px;
+    height:22px;
+    overflow:hidden;
+    box-shadow:inset 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .progress-bar-inner{
+    height:100%;
+    background:linear-gradient(90deg,var(--green),#66bb6a);
+    width:0%;
+    transition:width 0.4s ease;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding-right:8px;
+    color:#fff;
+    font-size:0.75rem;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .progress-label{
+    text-align:center;
+    margin-top:6px;
+    font-size:0.9rem;
+    font-weight:600;
+    color:var(--red);
+  }
+  .controls{
+    max-width:900px;
+    margin:18px auto 0;
+    padding:0 16px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  #search{
+    flex:1;
+    min-width:200px;
+    padding:10px 14px;
+    border-radius:8px;
+    border:1px solid #d8c39a;
+    font-size:0.95rem;
+    background:#fff;
+  }
+  .filter-btn{
+    padding:9px 14px;
+    border-radius:8px;
+    border:1px solid var(--gold);
+    background:#fff;
+    color:var(--red);
+    font-weight:600;
+    cursor:pointer;
+    font-size:0.85rem;
+    transition:all 0.2s;
+  }
+  .filter-btn.active{
+    background:var(--red);
+    color:#fff;
+  }
+  .filter-btn:hover{opacity:0.85;}
+  #resetBtn{
+    padding:9px 14px;
+    border-radius:8px;
+    border:1px solid #999;
+    background:#f5f5f5;
+    color:#555;
+    cursor:pointer;
+    font-size:0.85rem;
+  }
+  main{
+    max-width:900px;
+    margin:20px auto;
+    padding:0 16px;
+  }
+  .zone{
+    background:var(--card);
+    border-radius:12px;
+    margin-bottom:14px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    overflow:hidden;
+    border-left:5px solid var(--gold);
+  }
+  .zone summary{
+    cursor:pointer;
+    padding:14px 16px;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--red);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    list-style:none;
+    background:#fff9ed;
+  }
+  .zone summary::-webkit-details-marker{display:none;}
+  .zone summary .zone-count{
+    font-size:0.8rem;
+    font-weight:600;
+    background:var(--gold);
+    color:#fff;
+    padding:3px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .zone-body{
+    padding:6px 16px 14px;
+  }
+  .pandal-row{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:9px 4px;
+    border-bottom:1px solid #f1e6cf;
+  }
+  .pandal-row:last-child{border-bottom:none;}
+  .pandal-row input[type="checkbox"]{
+    width:20px;
+    height:20px;
+    margin-top:2px;
+    accent-color:var(--green);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .pandal-info{flex:1;}
+  .pandal-name{
+    font-size:0.98rem;
+    font-weight:500;
+    cursor:pointer;
+  }
+  .pandal-row.checked .pandal-name{
+    text-decoration:line-through;
+    color:#888;
+  }
+  .uncertain-tag{
+    font-size:0.68rem;
+    background:#fce3c9;
+    color:#8a5a00;
+    padding:1px 7px;
+    border-radius:10px;
+    margin-left:6px;
+    font-weight:600;
+    vertical-align:middle;
+  }
+  .note-input{
+    width:100%;
+    margin-top:5px;
+    padding:6px 8px;
+    font-size:0.82rem;
+    border:1px solid #e2d3ae;
+    border-radius:6px;
+    background:#fffdf7;
+    display:none;
+  }
+  .note-toggle{
+    font-size:0.72rem;
+    color:var(--red);
+    cursor:pointer;
+    text-decoration:underline;
+    margin-left:8px;
+  }
+  .hidden{display:none !important;}
+  footer{
+    text-align:center;
+    font-size:0.78rem;
+    color:#8a6d4f;
+    margin-top:30px;
+    padding:0 16px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🪔 Durga Puja 2026 Pandal Tracker 🪔</h1>
+  <p>Your personal pandal-hopping checklist across Kolkata</p>
+  <div class="countdowns">
+    <div class="countdown-box">Maha Shashthi (17 Oct)<b id="cdShashthi">--</b></div>
+    <div class="countdown-box">Vijaya Dashami (21 Oct)<b id="cdDashami">--</b></div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="progressBar">0%</div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 0 pandals visited</div>
+</div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search a pandal name...">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="visited">Visited</button>
+  <button class="filter-btn" data-filter="pending">Pending</button>
+  <button id="resetBtn">Reset All</button>
+</div>
+
+<main id="app"></main>
+
+<footer>Progress is saved automatically in this browser (localStorage). Clearing browser data will reset it.</footer>
+
+<script>
+const data = [
+  { zone:"Jodhpur Park", items:[
+    {name:"Taltala"},
+    {name:"Jodhpur Park"},
+    {name:"95 Pally"},
+  ]},
+  { zone:"Sarovar", items:[
+    {name:"Mudiali", visited:true},
+    {name:"Lake Youth Corner", uncertain:true},
+    {name:"Sibmandir", visited:true},
+    {name:"Pratapaditya Tricone Park", visited:true},
+    {name:"Tarun Sangha (Sarovar)"},
+    {name:"Sevak Sangha", uncertain:true},
+    {name:"Bengal Cuited Dub", uncertain:true},
+  ]},
+  { zone:"Kalighat–Gariahat", items:[
+    {name:"Tridhara Sammilani (Deshopriya Park)"},
+    {name:"Badamtala Ashar Sangha", visited:true},
+    {name:"Kalighat Yaba Maity Durga Puja (near Hazra)", uncertain:true},
+    {name:"Deshapriya Park"},
+    {name:"66 Pally", visited:true},
+    {name:"Nepal Bhattacharya Street", visited:true},
+    {name:"27 Pally Park"},
+    {name:"Ballygunge Cultural"},
+    {name:"Kalighat Mahashakti Durga Puja"},
+    {name:"Kalighat 64 Pally Durga Pujo"},
+    {name:"Sanghashree"},
+    {name:"Kalighat Sree Sangha"},
+    {name:"Maitri Sangha"},
+    {name:"Lake Sarbojanin"},
+    {name:"Adi Lake Palli Club"},
+    {name:"Sarat Bose Road Durga Puja"},
+    {name:"Nandalal Park Sarbojanin Durga Puja"},
+    {name:"Samaj Sebi Sangha", uncertain:true},
+  ]},
+  { zone:"Salt Lake", items:[
+    {name:"Salt Lake AB Block"},
+    {name:"Salt Lake AD Block"},
+    {name:"Salt Lake AE Block"},
+    {name:"Salt Lake AK Block"},
+    {name:"Salt Lake EE Block"},
+    {name:"Salt Lake FD Block"},
+    {name:"Newtown Sarbojanin"},
+  ]},
+  { zone:"Gariahat–Kasba", items:[
+    {name:"Ekdalia Evergreen"},
+    {name:"Hindustan Park"},
+    {name:"Singhi Park"},
+    {name:"Tarun Bindso Sarbojanin", uncertain:true},
+    {name:"Tarun Sangha (Kasba)"},
+    {name:"Gariahat Sarbojanin"},
+    {name:"Hindustan Tarun Sangha"},
+    {name:"Bosepukur Talbagan"},
+    {name:"Naba Udayan Sangha"},
+    {name:"Hindustan Club", uncertain:true},
+  ]},
+  { zone:"Esplanade–Shyambazar", items:[
+    {name:"Lattu Babu Chhatu Babu Rajbari (GP)"},
+    {name:"Rani Rashmoni Bari"},
+    {name:"Jorasanko Thakurbari (GP)"},
+    {name:"Charbagan Sarbojanin (MG Road)"},
+    {name:"Ahiritola Jubak Brinda Sarbojanin", visited:true},
+    {name:"Shobhabazar Benatola Sarbojanin", visited:true},
+    {name:"Nimtala Sarbojanin"},
+    {name:"Shobhabazar Rajbari"},
+    {name:"Basubati Rajbari (Bagbazar)"},
+    {name:"Nalin Sarkar Street (near Hatibagan)", visited:true},
+    {name:"Nabin Pally", visited:true},
+    {name:"Sikdar Bagan", visited:true},
+    {name:"Hatibagan Sarbojanin", visited:true},
+    {name:"Kashi Bose Lane", visited:true},
+    {name:"Beniatola", visited:true},
+    {name:"Ahiritola Sarbojanin", uncertain:true},
+  ]},
+  { zone:"Belgachia–Dumdum", items:[
+    {name:"Shreebhumi (near Belgachia)"},
+    {name:"Tala Prattoy (near Belgachia)"},
+    {name:"Dumdum Park Bharat Chakra (Belgachia)"},
+    {name:"Amra Sobai Club (near Nagerbazar)"},
+    {name:"Dumdum Park Tarun Sangha"},
+    {name:"Dumdum Park Tarun Dal"},
+  ]},
+  { zone:"Behala (Chowrasta / Sakher Bazar)", items:[
+    {name:"Barisha Yubak Brinda"},
+    {name:"Behala Club (B.C.)"},
+    {name:"Behala Sarbojanin (B.C.)"},
+    {name:"Behala Players' Corner (B.L.)"},
+    {name:"Barisha Sadhanatri (S.B2)"},
+    {name:"Barisha Udayan Palli (S.B2)"},
+    {name:"Barisha Tapovan Club (S.B2)"},
+    {name:"SBI Park Sarbojanin (S.B2)"},
+    {name:"Barisha Youth Club (S.BZ)"},
+  ]},
+  { zone:"Netaji (Tollygunge Side – Haridevpur)", items:[
+    {name:"Tarun Dal"},
+    {name:"Pally Unnayan Samity"},
+    {name:"Haridevpur Vivekananda Sporting Club"},
+    {name:"Haridevpur Adarsh Samity"},
+    {name:"Haridevpur New Sporting Club"},
+    {name:"Haridevpur Ajeya Sanghati"},
+    {name:"Haridevpur Vivekananda Park"},
+    {name:"Haridevpur 41 Pally"},
+  ]},
+  { zone:"Jatin Das Park / Hazra", items:[
+    {name:"Maddox Square"},
+    {name:"Rupchand Mukherjee Lane Sarbojanin"},
+    {name:"64 Pally"},
+    {name:"Hazra Park"},
+    {name:"Peyarar Bagan (near Maddox Square)"},
+    {name:"Bakul Bagan"},
+    {name:"Golmath Durga Puja Samiti", uncertain:true},
+    {name:"Abasar Sarbojanin"},
+    {name:"Kalighat Milan Sangha"},
+    {name:"Ballygunge Pally"},
+  ]},
+  { zone:"Netaji Bhawan / Bhowanipore", items:[
+    {name:"75 Pally"},
+    {name:"Chakraberia Sarbojanin"},
+    {name:"Northern Park"},
+    {name:"68 Pally"},
+    {name:"Swadhin Sangha"},
+  ]},
+  { zone:"Uncategorised", items:[
+    {name:"Bagbazar"},
+    {name:"Kumartuli"},
+  ]},
+];
+
+const STORAGE_KEY = "pujoTrackerState2026";
+
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function slug(zone, name){
+  return (zone + "_" + name).replace(/\s+/g,"_").replace(/[^\w]/g,"");
+}
+
+let state = loadState();
+
+// initialize state from default visited flags if not already saved
+data.forEach(z => z.items.forEach(it => {
+  const id = slug(z.zone, it.name);
+  if(!(id in state)){
+    state[id] = { visited: !!it.visited, note: "" };
+  }
+}));
+saveState(state);
+
+const app = document.getElementById("app");
+
+function render(){
+  app.innerHTML = "";
+  const searchTerm = document.getElementById("search").value.toLowerCase();
+  const activeFilter = document.querySelector(".filter-btn.active").dataset.filter;
+
+  let totalAll = 0, visitedAll = 0;
+
+  data.forEach(z => {
+    let zoneVisited = 0, zoneTotal = 0;
+    const rows = [];
+
+    z.items.forEach(it => {
+      const id = slug(z.zone, it.name);
+      const st = state[id];
+      zoneTotal++; totalAll++;
+      if(st.visited){ zoneVisited++; visitedAll++; }
+
+      const matchesSearch = it.name.toLowerCase().includes(searchTerm);
+      const matchesFilter = activeFilter === "all" ||
+        (activeFilter === "visited" && st.visited) ||
+        (activeFilter === "pending" && !st.visited);
+
+      if(!matchesSearch || !matchesFilter) return;
+
+      const row = document.createElement("div");
+      row.className = "pandal-row" + (st.visited ? " checked" : "");
+      row.innerHTML = `
+        <input type="checkbox" ${st.visited ? "checked" : ""} data-id="${id}">
+        <div class="pandal-info">
+          <span class="pandal-name" data-id="${id}">${it.name}</span>
+          ${it.uncertain ? '<span class="uncertain-tag">verify name/location</span>' : ''}
+          <span class="note-toggle" data-id="${id}">note</span>
+          <input type="text" class="note-input" data-id="${id}" placeholder="Add a note..." value="${st.note || ''}">
+        </div>
+      `;
+      rows.push(row);
+    });
+
+    if(rows.length === 0) return; // skip empty zones after filtering
+
+    const details = document.createElement("details");
+    details.className = "zone";
+    details.open = true;
+    const summary = document.createElement("summary");
+    summary.innerHTML = `<span>${z.zone}</span><span class="zone-count">${zoneVisited}/${zoneTotal}</span>`;
+    const body = document.createElement("div");
+    body.className = "zone-body";
+    rows.forEach(r => body.appendChild(r));
+    details.appendChild(summary);
+    details.appendChild(body);
+    app.appendChild(details);
+  });
+
+  const pct = totalAll ? Math.round((visitedAll/totalAll)*100) : 0;
+  document.getElementById("progressBar").style.width = pct + "%";
+  document.getElementById("progressBar").textContent = pct > 6 ? pct + "%" : "";
+  document.getElementById("progressLabel").textContent = `${visitedAll} / ${totalAll} pandals visited`;
+
+  attachHandlers();
+}
+
+function attachHandlers(){
+  document.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb => {
+    cb.addEventListener("change", e => {
+      const id = e.target.dataset.id;
+      state[id].visited = e.target.checked;
+      saveState(state);
+      render();
+    });
+  });
+  document.querySelectorAll(".pandal-name").forEach(el => {
+    el.addEventListener("click", e => {
+      const id = e.target.dataset.id;
+      const cb = document.querySelector(`input[data-id="${id}"]`);
+      cb.checked = !cb.checked;
+      cb.dispatchEvent(new Event("change"));
+    });
+  });
+  document.querySelectorAll(".note-toggle").forEach(el => {
+    el.addEventListener("click", e => {
+      const id = e.target.dataset.id;
+      const input = document.querySelector(`.note-input[data-id="${id}"]`);
+      input.style.display = input.style.display === "block" ? "none" : "block";
+    });
+  });
+  document.querySelectorAll(".note-input").forEach(el => {
+    if(el.value) el.style.display = "block";
+    el.addEventListener("input", e => {
+      const id = e.target.dataset.id;
+      state[id].note = e.target.value;
+      saveState(state);
+    });
+  });
+}
+
+document.getElementById("search").addEventListener("input", render);
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    render();
+  });
+});
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if(confirm("Reset all progress and notes? This cannot be undone.")){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+});
+
+// Countdown
+function updateCountdown(){
+  const now = new Date();
+  const shashthi = new Date("2026-10-17T00:00:00");
+  const dashami = new Date("2026-10-21T00:00:00");
+  const dayMs = 1000*60*60*24;
+  const dS = Math.ceil((shashthi - now)/dayMs);
+  const dD = Math.ceil((dashami - now)/dayMs);
+  document.getElementById("cdShashthi").textContent = dS >= 0 ? dS + " days" : "Passed";
+  document.getElementById("cdDashami").textContent = dD >= 0 ? dD + " days" : "Passed";
+}
+updateCountdown();
+
+render();
+</script>
+</body>
+</html>
