@@ -1,337 +1,167 @@
-:root {
-  --red: #9b1b30;
-  --red-dark: #6b0f1f;
-  --gold: #d4a017;
-  --gold-light: #f5e6c8;
-  --bg: #faf7f2;
-  --surface: #ffffff;
-  --text: #1a1410;
-  --text-muted: #6b5d54;
-  --green: #2e7d32;
-  --green-light: #4caf50;
-  --shadow-sm: 0 2px 8px rgba(155, 27, 48, 0.08);
-  --shadow-md: 0 8px 24px rgba(155, 27, 48, 0.12);
-  --shadow-lg: 0 16px 40px rgba(155, 27, 48, 0.16);
-}
+# Pandal Tracker - MERN App
 
-* {
-  box-sizing: border-box;
-}
+A full-stack Pandal Tracker app built with React, Node.js/Express (serverless), MongoDB Atlas, and deployed on Vercel.
 
-html {
-  scroll-behavior: smooth;
-}
+## Features
+- 🎯 Zone-wise pandal tracking
+- 🔍 Search by pandal name
+- 📊 Filter by all, visited, and pending
+- ✓ Mark pandals as visited
+- 📝 Add notes per pandal
+- 📈 Progress bar for tracking completion
+- 🌍 Full-stack with serverless backend
+- ⚡ MongoDB Atlas database
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-  background: linear-gradient(135deg, var(--bg) 0%, #f5f0eb 100%);
-  color: var(--text);
-  min-height: 100vh;
-  padding-bottom: 80px;
-}
+## Tech Stack
+- **Frontend:** React + Vite
+- **Backend:** Node.js + Express (Serverless on Vercel)
+- **Database:** MongoDB Atlas
+- **Deployment:** Vercel (both frontend and backend)
 
-header {
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
-  color: #fff;
-  padding: 18px 20px 22px;
-  text-align: center;
-  box-shadow: var(--shadow-lg);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+## Project Structure
 
-header h1,
-header h2 {
-  margin: 0;
-}
+```
+pandal-tracker/
+├── api/
+│   └── index.js              # Serverless Express app
+├── client/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── styles.css
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
+├── server/
+│   ├── models/
+│   │   ├── Pandal.js
+│   │   └── Progress.js
+│   ├── routes/
+│   │   ├── pandalRoutes.js
+│   │   └── progressRoutes.js
+│   ├── data/
+│   │   └── seed.js
+│   └── server.js             # Local dev server
+├── vercel.json              # Vercel config
+├── .env.example
+└── README.md
+```
 
-header h1 {
-  font-size: clamp(1.2rem, 4vw, 2rem);
-}
+## Local Development
 
-header h2 {
-  margin-top: 4px;
-  font-weight: 500;
-  font-size: 0.95rem;
-}
+### Prerequisites
+- Node.js v16+
+- MongoDB Atlas account
 
-header p {
-  margin: 8px 0 10px;
-  font-size: 0.85rem;
-  opacity: 0.95;
-}
+### Setup
 
-.countdowns {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
+1. Clone and install:
+```bash
+git clone https://github.com/pritam2020/pandal-tracker.git
+cd pandal-tracker
+npm install
+npm install --prefix client
+```
 
-.countdown-box {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  padding: 7px 10px;
-  font-size: 0.72rem;
-  min-width: 94px;
-}
+2. Create `.env` file:
+```bash
+cp .env.example .env
+```
 
-.countdown-box b {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--gold-light);
-  margin-top: 4px;
-  font-weight: 700;
-}
+3. Add your MongoDB Atlas connection string:
+```env
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/pandalTracker?retryWrites=true&w=majority
+```
 
-.progress-wrap {
-  max-width: 980px;
-  margin: 24px auto 0;
-  padding: 0 20px;
-}
+4. Seed the database:
+```bash
+npm run seed
+```
 
-.progress-bar-outer {
-  background: rgba(212, 160, 23, 0.08);
-  border-radius: 16px;
-  height: 26px;
-  overflow: hidden;
-  border: 1px solid rgba(212, 160, 23, 0.1);
-}
+5. Start development servers:
+```bash
+npm run dev
+```
 
-.progress-bar-inner {
-  height: 100%;
-  background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 100%);
-  transition: width 0.5s ease;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 10px;
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
+This starts:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
 
-.progress-label {
-  text-align: center;
-  margin-top: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
+## Production Deployment (Vercel)
 
-.controls {
-  max-width: 980px;
-  margin: 24px auto 0;
-  padding: 0 20px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  align-items: center;
-}
+### Frontend & Backend Setup
 
-#search {
-  flex: 1 1 220px;
-  min-width: 180px;
-  padding: 11px 16px;
-  border-radius: 10px;
-  border: 1.5px solid #e5d9cc;
-  font-size: 0.95rem;
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--shadow-sm);
-}
+1. Push to GitHub on `mern-conversion` branch
+2. Connect to Vercel
+3. Set environment variables:
+   - `MONGO_URI`: Your MongoDB Atlas connection string
+   - `VITE_API_URL`: Your Vercel API URL (e.g., `https://your-project.vercel.app/api`)
 
-#search:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.1), var(--shadow-sm);
-}
+4. Deploy!
 
-.filter-btn {
-  flex: 0 0 auto;
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: 1.5px solid var(--gold);
-  background: var(--surface);
-  color: var(--red);
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.85rem;
-  box-shadow: var(--shadow-sm);
-}
+Vercel will automatically:
+- Build the React frontend to `client/dist`
+- Deploy the serverless API from `api/index.js`
+- Route `/api/*` to serverless functions
+- Route everything else to the React app
 
-.filter-btn.active {
-  background: var(--red);
-  color: #fff;
-  border-color: var(--red);
-}
+## API Routes
 
-main {
-  max-width: 980px;
-  margin: 28px auto;
-  padding: 0 20px;
-}
+- `GET /api` - Health check
+- `GET /api/pandals` - Fetch all pandals
+- `GET /api/progress` - Fetch all user progress
+- `PUT /api/progress/:pandalId` - Update pandal progress/notes
 
-.zone {
-  background: var(--surface);
-  border-radius: 14px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  border: 1px solid #f0e9df;
-}
+## Environment Variables
 
-.zone summary {
-  cursor: pointer;
-  padding: 16px 18px;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--red);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  list-style: none;
-  background: linear-gradient(135deg, #fff9f5 0%, #fffaf7 100%);
-}
+**Local (.env):**
+```env
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/pandalTracker?retryWrites=true&w=majority
+PORT=5000
+VITE_API_URL=http://localhost:5000/api
+```
 
-.zone summary::-webkit-details-marker {
-  display: none;
-}
+**Vercel:**
+```
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/pandalTracker?retryWrites=true&w=majority
+VITE_API_URL=https://your-project.vercel.app/api
+```
 
-.zone summary::before {
-  content: '▸';
-  display: inline-block;
-  margin-right: 8px;
-  transition: transform 0.3s ease;
-}
+## Seeding Database
 
-.zone[open] summary::before {
-  transform: rotate(90deg);
-}
+To populate pandals from the original data:
 
-.zone-count {
-  font-size: 0.8rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--red) 0%, #c4162a 100%);
-  color: #fff;
-  padding: 4px 12px;
-  border-radius: 20px;
-}
+```bash
+npm run seed
+```
 
-.zone-body {
-  padding: 8px 18px 16px;
-}
+This will:
+- Connect to your MongoDB Atlas
+- Clear existing pandals
+- Insert 130+ pandals across 12 zones
 
-.pandal-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 11px 6px;
-  border-radius: 8px;
-}
+## Notes
 
-.pandal-row.checked .pandal-name {
-  text-decoration: line-through;
-  color: var(--text-muted);
-}
+- Backend runs as serverless functions on Vercel (no separate server needed)
+- Frontend is a static Vite React SPA
+- All data persists in MongoDB Atlas
+- Single deployment pipeline for both frontend and backend
+- Cold start delays on first request are normal for serverless
 
-.pandal-row input[type='checkbox'] {
-  width: 22px;
-  height: 22px;
-  margin-top: 1px;
-  accent-color: var(--green);
-  cursor: pointer;
-  flex-shrink: 0;
-}
+## Troubleshooting
 
-.pandal-info {
-  flex: 1;
-}
+**"MONGO_URI missing" error:**
+- Make sure `.env` file exists with your MongoDB connection string
+- On Vercel, add `MONGO_URI` as an environment variable
 
-.pandal-name {
-  font-size: 0.98rem;
-  font-weight: 500;
-  color: var(--text);
-}
+**Frontend can't reach API:**
+- Locally: Make sure both dev servers are running
+- Production: Check that `VITE_API_URL` is set correctly in Vercel environment
 
-.uncertain-tag {
-  font-size: 0.7rem;
-  background: #fef3cd;
-  color: #856404;
-  padding: 2px 8px;
-  border-radius: 6px;
-  margin-left: 8px;
-  font-weight: 600;
-}
+**Cold start delays:**
+- First request to serverless function takes a few seconds
+- Subsequent requests are fast
 
-.note-toggle {
-  font-size: 0.73rem;
-  color: var(--red);
-  cursor: pointer;
-  text-decoration: underline;
-  margin-left: 8px;
-}
+## License
 
-.note-input {
-  width: 100%;
-  margin-top: 8px;
-  padding: 8px 12px;
-  font-size: 0.85rem;
-  border: 1px solid #e5d9cc;
-  border-radius: 8px;
-  background: #fafaf8;
-  font-family: inherit;
-}
-
-.maps-btn {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 6px 11px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #f1f7f1 0%, #e8f5e9 100%);
-  border: 1px solid #c8e6c9;
-  color: var(--green);
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.maps-missing {
-  background: linear-gradient(135deg, #fff4df 0%, #ffe082 100%);
-  border-color: #ffb74d;
-  color: #9a6800;
-}
-
-footer {
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 40px;
-  padding: 20px 16px;
-}
-
-.loading {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  font-size: 1.2rem;
-  color: var(--red);
-  font-weight: 700;
-}
-
-@media (max-width: 640px) {
-  .controls {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-
-  .countdown-box {
-    min-width: 72px;
-    padding: 6px 8px;
-  }
-}
+MIT

@@ -2,10 +2,15 @@
   "name": "pandal-tracker-root",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run server --prefix server\" \"npm run dev --prefix client\"",
-    "server": "npm run start --prefix server",
-    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run dev --prefix client\" \"node server/server.js\"",
+    "build": "npm run build --prefix client",
     "seed": "node server/data/seed.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.1"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
