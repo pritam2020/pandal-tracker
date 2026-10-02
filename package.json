@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix client\" \"node server/server.js\"",
     "build": "npm run build --prefix client",
-    "seed": "node server/data/seed.js"
+    "seed": "node server/data/seed.js",
+    "postinstall": "npm install --prefix client"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 const pandalRoutes = require('./routes/pandalRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 
-dotenv.config();
+dotenv.config({ path: ['.env.development.local', '.env'] });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

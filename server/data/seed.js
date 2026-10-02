@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Pandal = require('../models/Pandal');
 
-dotenv.config();
+dotenv.config({ path: ['.env.development.local', '.env'] });
 
 const data = [
   { zone: 'Jodhpur Park', items: [
