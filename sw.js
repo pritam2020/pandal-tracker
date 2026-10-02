@@ -2,6 +2,7 @@ const CACHE_NAME = 'pandal-tracker-v1';
 const APP_SHELL = [
   './',
   './index.html',
+  './offline.html',
   './manifest.json',
   './icons/icon-192.svg',
   './icons/icon-512.svg'
@@ -38,7 +39,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
           return networkResponse;
         })
-        .catch(() => caches.match('./index.html'));
+        .catch(() => caches.match('./offline.html'));
     })
   );
 });

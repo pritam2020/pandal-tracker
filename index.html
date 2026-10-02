@@ -117,7 +117,9 @@
     font-size:0.95rem;
     background:#fff;
   }
-  .filter-btn{
+  .filter-btn,
+  #installBtn,
+  #resetBtn{
     padding:9px 14px;
     border-radius:8px;
     border:1px solid var(--gold);
@@ -132,15 +134,12 @@
     background:var(--red);
     color:#fff;
   }
-  .filter-btn:hover{opacity:0.85;}
+  .filter-btn:hover, #installBtn:hover, #resetBtn:hover{opacity:0.85;}
+  #installBtn.hidden{display:none;}
   #resetBtn{
-    padding:9px 14px;
-    border-radius:8px;
     border:1px solid #999;
-    background:#f5f5f5;
     color:#555;
-    cursor:pointer;
-    font-size:0.85rem;
+    background:#f5f5f5;
   }
   main{
     max-width:900px;
@@ -233,7 +232,6 @@
     text-decoration:underline;
     margin-left:8px;
   }
-  .hidden{display:none !important;}
   .maps-btn{
     display:inline-block;
     margin-top:6px;
@@ -246,9 +244,7 @@
     font-size:0.75rem;
     font-weight:600;
   }
-  .maps-btn:hover{
-    background:#e1f0e1;
-  }
+  .maps-btn:hover{background:#e1f0e1;}
   .maps-missing{
     background:#fff4df;
     border-color:#e5c27a;
@@ -287,6 +283,7 @@
   <button class="filter-btn active" data-filter="all">All</button>
   <button class="filter-btn" data-filter="visited">Visited</button>
   <button class="filter-btn" data-filter="pending">Pending</button>
+  <button id="installBtn" class="hidden">Install App</button>
   <button id="resetBtn">Reset All</button>
 </div>
 
@@ -558,11 +555,29 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
     render();
   });
 });
+
 document.getElementById("resetBtn").addEventListener("click", () => {
   if(confirm("Reset all progress and notes? This cannot be undone.")){
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   }
+});
+
+let deferredPrompt = null;
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredPrompt = event;
+  installBtn.classList.remove("hidden");
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.classList.add("hidden");
 });
 
 if ("serviceWorker" in navigator) {
