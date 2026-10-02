@@ -175,14 +175,14 @@
     margin: 24px auto 0;
     padding: 0 20px;
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
     align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
   }
 
   #search {
-    flex: 1;
-    min-width: 200px;
+    flex: 1 1 220px;
+    min-width: 180px;
     padding: 11px 16px;
     border-radius: 10px;
     border: 1.5px solid #e5d9cc;
@@ -204,6 +204,7 @@
   }
 
   .filter-btn, #installBtn, #resetBtn {
+    flex: 0 0 auto;
     padding: 10px 16px;
     border-radius: 10px;
     border: 1.5px solid var(--gold);
@@ -440,9 +441,15 @@
   @media (max-width: 640px) {
     header { padding: 24px 16px 32px; }
     header h1 { font-size: 1.3rem; }
-    .controls { flex-direction: column; }
-    #search { width: 100%; }
-    .filter-btn, #installBtn, #resetBtn { flex: 1; }
+    .controls {
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+    #search { width: 100%; flex-basis: 100%; }
+    .filter-btn, #installBtn, #resetBtn {
+      flex: 1 1 calc(50% - 10px);
+      min-width: 110px;
+    }
     .zone summary { font-size: 0.95rem; padding: 14px 14px; }
     .install-banner { flex-direction: column; align-items: flex-start; }
   }
