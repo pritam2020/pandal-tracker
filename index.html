@@ -227,28 +227,26 @@
   }
   .hidden{display:none !important;}
   .maps-btn{
-  display:inline-block;
-  margin-top:6px;
-  padding:4px 9px;
-  border-radius:6px;
-  background:#f1f7f1;
-  border:1px solid #b8d8b8;
-  color:#2e7d32;
-  text-decoration:none;
-  font-size:0.75rem;
-  font-weight:600;
-}
-
-.maps-btn:hover{
-  background:#e1f0e1;
-}
-
-.maps-missing{
-  background:#fff4df;
-  border-color:#e5c27a;
-  color:#9a6800;
-  cursor:default;
-}
+    display:inline-block;
+    margin-top:6px;
+    padding:4px 9px;
+    border-radius:6px;
+    background:#f1f7f1;
+    border:1px solid #b8d8b8;
+    color:#2e7d32;
+    text-decoration:none;
+    font-size:0.75rem;
+    font-weight:600;
+  }
+  .maps-btn:hover{
+    background:#e1f0e1;
+  }
+  .maps-missing{
+    background:#fff4df;
+    border-color:#e5c27a;
+    color:#9a6800;
+    cursor:default;
+  }
   footer{
     text-align:center;
     font-size:0.78rem;
@@ -292,7 +290,7 @@
 const data = [
   { zone:"Jodhpur Park", items:[
     {name:"Taltala", maps:"https://maps.apple/p/BC3SAzi_JGIYrc"},
-    {name:"Jodhpur Park", maps:"https://share.google/B53vhiLhhbzMvqB9t"
+    {name:"Jodhpur Park", maps:"https://share.google/B53vhiLhhbzMvqB9t"},
     {name:"95 Pally", maps:"https://share.google/7IBsnG7oipUmKgnF7"},
   ]},
   { zone:"Sarovar", items:[
@@ -434,7 +432,6 @@ function slug(zone, name){
 
 let state = loadState();
 
-// initialize state from default visited flags if not already saved
 data.forEach(z => z.items.forEach(it => {
   const id = slug(z.zone, it.name);
   if(!(id in state)){
@@ -469,6 +466,10 @@ function render(){
 
       if(!matchesSearch || !matchesFilter) return;
 
+      const mapHtml = it.maps
+        ? `<a class="maps-btn" href="${it.maps}" target="_blank" rel="noopener noreferrer">📍 Maps</a>`
+        : `<span class="maps-btn maps-missing">📍 Add location</span>`;
+
       const row = document.createElement("div");
       row.className = "pandal-row" + (st.visited ? " checked" : "");
       row.innerHTML = `
@@ -478,13 +479,13 @@ function render(){
           ${it.uncertain ? '<span class="uncertain-tag">verify name/location</span>' : ''}
           <span class="note-toggle" data-id="${id}">note</span>
           <input type="text" class="note-input" data-id="${id}" placeholder="Add a note..." value="${st.note || ''}">
-          <a class="maps-btn" href="${it.maps}" target="_blank" rel="noopener noreferrer" >📍 Maps </a> : <span class="maps-btn maps-missing">📍 Add location </span>
+          ${mapHtml}
         </div>
       `;
       rows.push(row);
     });
 
-    if(rows.length === 0) return; // skip empty zones after filtering
+    if(rows.length === 0) return;
 
     const details = document.createElement("details");
     details.className = "zone";
@@ -556,7 +557,6 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   }
 });
 
-// Countdown
 function updateCountdown(){
   const now = new Date();
   const shashthi = new Date("2026-10-17T00:00:00");
