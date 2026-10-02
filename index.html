@@ -44,7 +44,7 @@
   header {
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
     color: #fff;
-    padding: 32px 20px 40px;
+    padding: 18px 20px 22px;
     text-align: center;
     box-shadow: var(--shadow-lg);
     position: sticky;
@@ -54,15 +54,15 @@
 
   header h1 {
     margin: 0 0 8px;
-    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    font-size: clamp(1.2rem, 4vw, 2rem);
     letter-spacing: -0.5px;
     font-weight: 700;
     line-height: 1.2;
   }
 
   header p {
-    margin: 4px 0 16px;
-    font-size: 0.95rem;
+    margin: 4px 0 10px;
+    font-size: 0.85rem;
     opacity: 0.95;
     font-weight: 500;
   }
@@ -70,19 +70,20 @@
   .countdowns {
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
-    margin-top: 12px;
+    margin-top: 8px;
   }
 
   .countdown-box {
     background: rgba(255,255,255,0.12);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 8px 14px;
-    font-size: 0.8rem;
+    border-radius: 10px;
+    padding: 7px 10px;
+    font-size: 0.72rem;
     transition: all 0.3s ease;
+    min-width: 94px;
   }
 
   .countdown-box:hover {
@@ -91,10 +92,12 @@
 
   .countdown-box b {
     display: block;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: var(--gold-light);
     margin-top: 4px;
     font-weight: 700;
+    line-height: 1.25;
+    word-break: break-word;
   }
 
   .install-banner {
@@ -175,11 +178,11 @@
     margin: 24px auto 0;
     padding: 0 20px;
     display: flex;
-    align-items: center;
     gap: 10px;
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    align-items: center;
   }
 
   #search {
@@ -441,8 +444,10 @@
   }
 
   @media (max-width: 640px) {
-    header { padding: 24px 16px 32px; }
-    header h1 { font-size: 1.3rem; }
+    header { padding: 16px 16px 18px; }
+    header h1 { font-size: 1.2rem; }
+    .countdown-box { min-width: 72px; padding: 6px 8px; }
+    .countdown-box b { font-size: 0.72rem; }
     .controls {
       flex-wrap: nowrap;
       overflow-x: auto;
@@ -471,8 +476,13 @@
   <h1 style="margin-top: 2px; font-size: 0.9em; font-weight: 500; letter-spacing: 0.3px;">Pandal Tracker</h1>
   <p>Your personal pandal-hopping checklist</p>
   <div class="countdowns">
-    <div class="countdown-box">Shashthi<b id="cdShashthi">--</b></div>
-    <div class="countdown-box">Dashami<b id="cdDashami">--</b></div>
+    <div class="countdown-box">15 Panchami<b id="cdPanchami">--</b></div>
+    <div class="countdown-box">16 Sashti<b id="cdSasthi">--</b></div>
+    <div class="countdown-box">17 Saptami<b id="cdSaptami">--</b></div>
+    <div class="countdown-box">18 Saptami<b id="cdSaptami2">--</b></div>
+    <div class="countdown-box">19 Ashtami<b id="cdAshtami">--</b></div>
+    <div class="countdown-box">20 Navami<b id="cdNavami">--</b></div>
+    <div class="countdown-box">21 Dashami<b id="cdDashami">--</b></div>
   </div>
 </header>
 
@@ -826,17 +836,37 @@ setTimeout(() => {
   }
 }, 2000);
 
+const festivalDates = [
+  { id: "Panchami", label: "15 Panchami", date: new Date("2026-10-15T00:00:00") },
+  { id: "Sasthi", label: "16 Sasthi", date: new Date("2026-10-16T00:00:00") },
+  { id: "Saptami", label: "17 Saptami", date: new Date("2026-10-17T00:00:00") },
+  { id: "Saptami2", label: "18 Saptami", date: new Date("2026-10-18T00:00:00") },
+  { id: "Ashtami", label: "19 Ashtami", date: new Date("2026-10-19T00:00:00") },
+  { id: "Navami", label: "20 Navami", date: new Date("2026-10-20T00:00:00") },
+  { id: "Dashami", label: "21 Dashami", date: new Date("2026-10-21T00:00:00") }
+];
+
+function formatCountdown(ms) {
+  if (ms <= 0) return "Live";
+  const totalMinutes = Math.floor(ms / 60000);
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const minutes = totalMinutes % 60;
+  return `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
+}
+
 function updateCountdown(){
   const now = new Date();
-  const shashthi = new Date("2026-10-17T00:00:00");
-  const dashami = new Date("2026-10-21T00:00:00");
-  const dayMs = 1000 * 60 * 60 * 24;
-  const dS = Math.ceil((shashthi - now) / dayMs);
-  const dD = Math.ceil((dashami - now) / dayMs);
-  document.getElementById("cdShashthi").textContent = dS >= 0 ? dS + "d" : "✓";
-  document.getElementById("cdDashami").textContent = dD >= 0 ? dD + "d" : "✓";
+  festivalDates.forEach(({ id, date }) => {
+    const element = document.getElementById(`cd${id}`);
+    if (!element) return;
+    const diff = date - now;
+    element.textContent = diff > 0 ? formatCountdown(diff) : "Live";
+  });
 }
+
 updateCountdown();
+setInterval(updateCountdown, 60000);
 render();
 </script>
 </body>
