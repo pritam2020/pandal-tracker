@@ -6,7 +6,7 @@
 <meta name="description" content="Durga Puja 2026 Pandal Tracker">
 <meta name="theme-color" content="#9b1b30">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pandal Tracker">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg">
@@ -15,258 +15,453 @@
 <style>
   :root{
     --red:#9b1b30;
+    --red-dark:#6b0f1f;
     --gold:#d4a017;
     --gold-light:#f5e6c8;
-    --bg:#fff8ee;
-    --text:#3a2418;
-    --card:#ffffff;
+    --bg:#faf7f2;
+    --surface:#ffffff;
+    --text:#1a1410;
+    --text-muted:#6b5d54;
     --green:#2e7d32;
+    --green-light:#4caf50;
+    --shadow-sm:0 2px 8px rgba(155,27,48,0.08);
+    --shadow-md:0 8px 24px rgba(155,27,48,0.12);
+    --shadow-lg:0 16px 40px rgba(155,27,48,0.16);
   }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    padding-bottom:60px;
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(135deg, var(--bg) 0%, #f5f0eb 100%);
+    color: var(--text);
+    padding-bottom: 80px;
+    min-height: 100vh;
   }
-  header{
-    background:linear-gradient(135deg,var(--red),#5c0f1c);
-    color:#fff;
-    padding:24px 16px 20px;
-    text-align:center;
-    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+
+  header {
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+    color: #fff;
+    padding: 32px 20px 40px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  header h1{
-    margin:0 0 6px;
-    font-size:1.6rem;
-    letter-spacing:0.5px;
+
+  header h1 {
+    margin: 0 0 8px;
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    letter-spacing: -0.5px;
+    font-weight: 700;
+    line-height: 1.2;
   }
-  header p{
-    margin:4px 0;
-    font-size:0.9rem;
-    opacity:0.9;
+
+  header p {
+    margin: 4px 0 16px;
+    font-size: 0.95rem;
+    opacity: 0.95;
+    font-weight: 500;
   }
-  .countdowns{
-    display:flex;
-    justify-content:center;
-    gap:14px;
-    margin-top:10px;
-    flex-wrap:wrap;
+
+  .countdowns {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
   }
-  .countdown-box{
-    background:rgba(255,255,255,0.15);
-    border:1px solid rgba(255,255,255,0.3);
-    border-radius:10px;
-    padding:6px 12px;
-    font-size:0.8rem;
+
+  .countdown-box {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
   }
-  .countdown-box b{
-    display:block;
-    font-size:1.1rem;
-    color:var(--gold-light);
+
+  .countdown-box:hover {
+    background: rgba(255,255,255,0.18);
   }
-  .progress-wrap{
-    max-width:900px;
-    margin:16px auto 0;
-    padding:0 16px;
+
+  .countdown-box b {
+    display: block;
+    font-size: 1rem;
+    color: var(--gold-light);
+    margin-top: 4px;
+    font-weight: 700;
   }
-  .progress-bar-outer{
-    background:#eee2c8;
-    border-radius:20px;
-    height:22px;
-    overflow:hidden;
-    box-shadow:inset 0 1px 4px rgba(0,0,0,0.2);
+
+  .install-banner {
+    max-width: 980px;
+    margin: 20px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fffaf2 0%, #fff4d6 100%);
+    border: 1px solid #f2c86d;
+    box-shadow: var(--shadow-sm);
+    color: #6b4b00;
+    font-size: 0.9rem;
+    font-weight: 600;
   }
-  .progress-bar-inner{
-    height:100%;
-    background:linear-gradient(90deg,var(--green),#66bb6a);
-    width:0%;
-    transition:width 0.4s ease;
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    padding-right:8px;
-    color:#fff;
-    font-size:0.75rem;
-    font-weight:600;
-    white-space:nowrap;
+
+  .install-banner.hidden {
+    display: none;
   }
-  .progress-label{
-    text-align:center;
-    margin-top:6px;
-    font-size:0.9rem;
-    font-weight:600;
-    color:var(--red);
+
+  .install-banner strong {
+    color: var(--red);
   }
-  .controls{
-    max-width:900px;
-    margin:18px auto 0;
-    padding:0 16px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
+
+  .install-banner button {
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 700;
   }
-  #search{
-    flex:1;
-    min-width:200px;
-    padding:10px 14px;
-    border-radius:8px;
-    border:1px solid #d8c39a;
-    font-size:0.95rem;
-    background:#fff;
+
+  .progress-wrap {
+    max-width: 980px;
+    margin: 24px auto 0;
+    padding: 0 20px;
   }
-  .filter-btn,
-  #installBtn,
-  #resetBtn{
-    padding:9px 14px;
-    border-radius:8px;
-    border:1px solid var(--gold);
-    background:#fff;
-    color:var(--red);
-    font-weight:600;
-    cursor:pointer;
-    font-size:0.85rem;
-    transition:all 0.2s;
+
+  .progress-bar-outer {
+    background: rgba(212,160,23,0.08);
+    border-radius: 16px;
+    height: 26px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid rgba(212,160,23,0.1);
   }
-  .filter-btn.active{
-    background:var(--red);
-    color:#fff;
+
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 100%);
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
   }
-  .filter-btn:hover, #installBtn:hover, #resetBtn:hover{opacity:0.85;}
-  #resetBtn{
-    border:1px solid #999;
-    color:#555;
-    background:#f5f5f5;
+
+  .progress-label {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
   }
-  main{
-    max-width:900px;
-    margin:20px auto;
-    padding:0 16px;
+
+  .controls {
+    max-width: 980px;
+    margin: 24px auto 0;
+    padding: 0 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
   }
-  .zone{
-    background:var(--card);
-    border-radius:12px;
-    margin-bottom:14px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    overflow:hidden;
-    border-left:5px solid var(--gold);
+
+  #search {
+    flex: 1;
+    min-width: 200px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #e5d9cc;
+    font-size: 0.95rem;
+    background: var(--surface);
+    color: var(--text);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
   }
-  .zone summary{
-    cursor:pointer;
-    padding:14px 16px;
-    font-weight:700;
-    font-size:1.05rem;
-    color:var(--red);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    list-style:none;
-    background:#fff9ed;
+
+  #search:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,160,23,0.1), var(--shadow-sm);
   }
-  .zone summary::-webkit-details-marker{display:none;}
-  .zone summary .zone-count{
-    font-size:0.8rem;
-    font-weight:600;
-    background:var(--gold);
-    color:#fff;
-    padding:3px 10px;
-    border-radius:20px;
-    white-space:nowrap;
+
+  #search::placeholder {
+    color: var(--text-muted);
   }
-  .zone-body{
-    padding:6px 16px 14px;
+
+  .filter-btn, #installBtn, #resetBtn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--gold);
+    background: var(--surface);
+    color: var(--red);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
   }
-  .pandal-row{
-    display:flex;
-    align-items:flex-start;
-    gap:10px;
-    padding:9px 4px;
-    border-bottom:1px solid #f1e6cf;
+
+  .filter-btn:hover, #installBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: #fafaf8;
   }
-  .pandal-row:last-child{border-bottom:none;}
-  .pandal-row input[type="checkbox"]{
-    width:20px;
-    height:20px;
-    margin-top:2px;
-    accent-color:var(--green);
-    cursor:pointer;
-    flex-shrink:0;
+
+  .filter-btn.active {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
   }
-  .pandal-info{flex:1;}
-  .pandal-name{
-    font-size:0.98rem;
-    font-weight:500;
-    cursor:pointer;
+
+  #resetBtn {
+    border-color: #d0d0d0;
+    color: var(--text-muted);
+    background: #f9f7f4;
   }
-  .pandal-row.checked .pandal-name{
-    text-decoration:line-through;
-    color:#888;
+
+  #resetBtn:hover {
+    background: #f0ebe6;
   }
-  .uncertain-tag{
-    font-size:0.68rem;
-    background:#fce3c9;
-    color:#8a5a00;
-    padding:1px 7px;
-    border-radius:10px;
-    margin-left:6px;
-    font-weight:600;
-    vertical-align:middle;
+
+  main {
+    max-width: 980px;
+    margin: 28px auto;
+    padding: 0 20px;
   }
-  .note-input{
-    width:100%;
-    margin-top:5px;
-    padding:6px 8px;
-    font-size:0.82rem;
-    border:1px solid #e2d3ae;
-    border-radius:6px;
-    background:#fffdf7;
-    display:none;
+
+  .zone {
+    background: var(--surface);
+    border-radius: 14px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    border: 1px solid #f0e9df;
+    transition: all 0.3s ease;
   }
-  .note-toggle{
-    font-size:0.72rem;
-    color:var(--red);
-    cursor:pointer;
-    text-decoration:underline;
-    margin-left:8px;
+
+  .zone:hover {
+    box-shadow: var(--shadow-md);
   }
-  .maps-btn{
-    display:inline-block;
-    margin-top:6px;
-    padding:4px 9px;
-    border-radius:6px;
-    background:#f1f7f1;
-    border:1px solid #b8d8b8;
-    color:#2e7d32;
-    text-decoration:none;
-    font-size:0.75rem;
-    font-weight:600;
+
+  .zone[open] summary {
+    border-bottom: 1px solid #f0e9df;
   }
-  .maps-btn:hover{background:#e1f0e1;}
-  .maps-missing{
-    background:#fff4df;
-    border-color:#e5c27a;
-    color:#9a6800;
-    cursor:default;
+
+  .zone summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--red);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    background: linear-gradient(135deg, #fff9f5 0%, #fffaf7 100%);
+    transition: all 0.2s ease;
   }
-  footer{
-    text-align:center;
-    font-size:0.78rem;
-    color:#8a6d4f;
-    margin-top:30px;
-    padding:0 16px;
+
+  .zone summary:hover {
+    background: linear-gradient(135deg, #fff5ef 0%, #fff7f3 100%);
+  }
+
+  .zone summary::-webkit-details-marker { display: none; }
+
+  .zone summary::before {
+    content: '▸';
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+    font-size: 1.1rem;
+  }
+
+  .zone[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .zone summary .zone-count {
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--red) 0%, #c4162a 100%);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(155,27,48,0.2);
+  }
+
+  .zone-body {
+    padding: 8px 18px 16px;
+  }
+
+  .pandal-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 6px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .pandal-row:hover {
+    background: #fafaf8;
+  }
+
+  .pandal-row input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    accent-color: var(--green);
+    cursor: pointer;
+    flex-shrink: 0;
+    border-radius: 6px;
+  }
+
+  .pandal-info { flex: 1; }
+
+  .pandal-name {
+    font-size: 0.98rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.2s ease;
+  }
+
+  .pandal-name:hover {
+    color: var(--red);
+  }
+
+  .pandal-row.checked .pandal-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .uncertain-tag {
+    font-size: 0.7rem;
+    background: #fef3cd;
+    color: #856404;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 8px;
+    font-weight: 600;
+    vertical-align: middle;
+    display: inline-block;
+    border: 0.5px solid #ffeaa7;
+  }
+
+  .note-input {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border: 1px solid #e5d9cc;
+    border-radius: 8px;
+    background: #fafaf8;
+    display: none;
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+
+  .note-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: var(--surface);
+  }
+
+  .note-toggle {
+    font-size: 0.73rem;
+    color: var(--red);
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .note-toggle:hover {
+    color: var(--red-dark);
+  }
+
+  .maps-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 11px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f1f7f1 0%, #e8f5e9 100%);
+    border: 1px solid #c8e6c9;
+    color: var(--green);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .maps-btn:hover {
+    background: linear-gradient(135deg, #e8f5e9 0%, #dcedc8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46,125,50,0.15);
+  }
+
+  .maps-missing {
+    background: linear-gradient(135deg, #fff4df 0%, #ffe082 100%);
+    border-color: #ffb74d;
+    color: #9a6800;
+    cursor: default;
+  }
+
+  .maps-missing:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 40px;
+    padding: 20px 16px;
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 24px 16px 32px; }
+    header h1 { font-size: 1.3rem; }
+    .controls { flex-direction: column; }
+    #search { width: 100%; }
+    .filter-btn, #installBtn, #resetBtn { flex: 1; }
+    .zone summary { font-size: 0.95rem; padding: 14px 14px; }
+    .install-banner { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
 <body>
 
+<div id="installBanner" class="install-banner hidden">
+  <span><strong>Install the app:</strong> Use Chrome menu → Install app, or on iPhone use Safari → Share → Add to Home Screen.</span>
+  <button id="closeInstallBanner" type="button">Close</button>
+</div>
+
 <header>
-  <h1>🪔 Durga Puja 2026 Pandal Tracker 🪔</h1>
-  <p>Your personal pandal-hopping checklist across Kolkata</p>
+  <h1>🪔 Durga Puja 2026</h1>
+  <h1 style="margin-top: 2px; font-size: 0.9em; font-weight: 500; letter-spacing: 0.3px;">Pandal Tracker</h1>
+  <p>Your personal pandal-hopping checklist</p>
   <div class="countdowns">
-    <div class="countdown-box">Maha Shashthi (17 Oct)<b id="cdShashthi">--</b></div>
-    <div class="countdown-box">Vijaya Dashami (21 Oct)<b id="cdDashami">--</b></div>
+    <div class="countdown-box">Shashthi<b id="cdShashthi">--</b></div>
+    <div class="countdown-box">Dashami<b id="cdDashami">--</b></div>
   </div>
 </header>
 
@@ -278,17 +473,17 @@
 </div>
 
 <div class="controls">
-  <input type="text" id="search" placeholder="Search a pandal name...">
+  <input type="text" id="search" placeholder="🔍 Search pandal...">
   <button class="filter-btn active" data-filter="all">All</button>
-  <button class="filter-btn" data-filter="visited">Visited</button>
-  <button class="filter-btn" data-filter="pending">Pending</button>
-  <button id="installBtn">Install App</button>
-  <button id="resetBtn">Reset All</button>
+  <button class="filter-btn" data-filter="visited">✓ Visited</button>
+  <button class="filter-btn" data-filter="pending">⊕ Pending</button>
+  <button id="installBtn" style="background: linear-gradient(135deg, var(--red), var(--red-dark)); color: #fff; border-color: var(--red);">📱 Install</button>
+  <button id="resetBtn">↻ Reset</button>
 </div>
 
 <main id="app"></main>
 
-<footer>Progress is saved automatically in this browser (localStorage). Clearing browser data will reset it.</footer>
+<footer>📍 Progress saved automatically • Works offline</footer>
 
 <script>
 const data = [
@@ -422,10 +617,13 @@ const data = [
 const STORAGE_KEY = "pujoTrackerState2026";
 
 function loadState(){
-  try{
+  try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-  }catch(e){ return {}; }
+  } catch (e) {
+    return {};
+  }
 }
+
 function saveState(state){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -438,7 +636,7 @@ let state = loadState();
 
 data.forEach(z => z.items.forEach(it => {
   const id = slug(z.zone, it.name);
-  if(!(id in state)){
+  if (!(id in state)) {
     state[id] = { visited: !!it.visited, note: "" };
   }
 }));
@@ -461,18 +659,18 @@ function render(){
       const id = slug(z.zone, it.name);
       const st = state[id];
       zoneTotal++; totalAll++;
-      if(st.visited){ zoneVisited++; visitedAll++; }
+      if (st.visited) { zoneVisited++; visitedAll++; }
 
       const matchesSearch = it.name.toLowerCase().includes(searchTerm);
       const matchesFilter = activeFilter === "all" ||
         (activeFilter === "visited" && st.visited) ||
         (activeFilter === "pending" && !st.visited);
 
-      if(!matchesSearch || !matchesFilter) return;
+      if (!matchesSearch || !matchesFilter) return;
 
       const mapHtml = it.maps
         ? `<a class="maps-btn" href="${it.maps}" target="_blank" rel="noopener noreferrer">📍 Maps</a>`
-        : `<span class="maps-btn maps-missing">📍 Add location</span>`;
+        : `<span class="maps-btn maps-missing">📍 No link</span>`;
 
       const row = document.createElement("div");
       row.className = "pandal-row" + (st.visited ? " checked" : "");
@@ -480,8 +678,8 @@ function render(){
         <input type="checkbox" ${st.visited ? "checked" : ""} data-id="${id}">
         <div class="pandal-info">
           <span class="pandal-name" data-id="${id}">${it.name}</span>
-          ${it.uncertain ? '<span class="uncertain-tag">verify name/location</span>' : ''}
-          <span class="note-toggle" data-id="${id}">note</span>
+          ${it.uncertain ? '<span class="uncertain-tag">⚠ verify</span>' : ''}
+          <span class="note-toggle" data-id="${id}">📝 note</span>
           <input type="text" class="note-input" data-id="${id}" placeholder="Add a note..." value="${st.note || ''}">
           ${mapHtml}
         </div>
@@ -489,7 +687,7 @@ function render(){
       rows.push(row);
     });
 
-    if(rows.length === 0) return;
+    if (rows.length === 0) return;
 
     const details = document.createElement("details");
     details.className = "zone";
@@ -504,9 +702,9 @@ function render(){
     app.appendChild(details);
   });
 
-  const pct = totalAll ? Math.round((visitedAll/totalAll)*100) : 0;
+  const pct = totalAll ? Math.round((visitedAll / totalAll) * 100) : 0;
   document.getElementById("progressBar").style.width = pct + "%";
-  document.getElementById("progressBar").textContent = pct > 6 ? pct + "%" : "";
+  document.getElementById("progressBar").textContent = pct > 8 ? pct + "%" : "";
   document.getElementById("progressLabel").textContent = `${visitedAll} / ${totalAll} pandals visited`;
 
   attachHandlers();
@@ -521,6 +719,7 @@ function attachHandlers(){
       render();
     });
   });
+
   document.querySelectorAll(".pandal-name").forEach(el => {
     el.addEventListener("click", e => {
       const id = e.target.dataset.id;
@@ -529,6 +728,7 @@ function attachHandlers(){
       cb.dispatchEvent(new Event("change"));
     });
   });
+
   document.querySelectorAll(".note-toggle").forEach(el => {
     el.addEventListener("click", e => {
       const id = e.target.dataset.id;
@@ -536,8 +736,9 @@ function attachHandlers(){
       input.style.display = input.style.display === "block" ? "none" : "block";
     });
   });
+
   document.querySelectorAll(".note-input").forEach(el => {
-    if(el.value) el.style.display = "block";
+    if (el.value) el.style.display = "block";
     el.addEventListener("input", e => {
       const id = e.target.dataset.id;
       state[id].note = e.target.value;
@@ -556,24 +757,36 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
 });
 
 document.getElementById("resetBtn").addEventListener("click", () => {
-  if(confirm("Reset all progress and notes? This cannot be undone.")){
+  if (confirm("Reset all progress and notes? This cannot be undone.")) {
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   }
 });
 
-let deferredPrompt = null;
 const installBtn = document.getElementById("installBtn");
+const installBanner = document.getElementById("installBanner");
+const closeInstallBannerBtn = document.getElementById("closeInstallBanner");
+
+let deferredPrompt = null;
 
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredPrompt = event;
   installBtn.style.display = "inline-block";
+  installBanner.classList.remove("hidden");
+  installBanner.innerHTML = '<span><strong>Install this app:</strong> Tap the install button or use your browser menu → Install app.</span><button id="closeInstallBanner" type="button">Close</button>';
+  document.getElementById("closeInstallBanner").addEventListener("click", () => {
+    installBanner.classList.add("hidden");
+  });
 });
 
 installBtn.addEventListener("click", async () => {
   if (!deferredPrompt) {
-    alert("Install prompt is not available yet. Try opening this page in a browser that supports PWA install, or use the browser menu > Install App.");
+    installBanner.classList.remove("hidden");
+    installBanner.innerHTML = '<span><strong>Install manually:</strong> Chrome/Edge → menu → Install app. iPhone → Safari → Share → Add to Home Screen.</span><button id="closeInstallBanner" type="button">Close</button>';
+    document.getElementById("closeInstallBanner").addEventListener("click", () => {
+      installBanner.classList.add("hidden");
+    });
     return;
   }
 
@@ -581,6 +794,11 @@ installBtn.addEventListener("click", async () => {
   await deferredPrompt.userChoice;
   deferredPrompt = null;
   installBtn.style.display = "none";
+  installBanner.classList.add("hidden");
+});
+
+closeInstallBannerBtn.addEventListener("click", () => {
+  installBanner.classList.add("hidden");
 });
 
 if ("serviceWorker" in navigator) {
@@ -591,18 +809,23 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+setTimeout(() => {
+  if (!deferredPrompt) {
+    installBanner.classList.remove("hidden");
+  }
+}, 2000);
+
 function updateCountdown(){
   const now = new Date();
   const shashthi = new Date("2026-10-17T00:00:00");
   const dashami = new Date("2026-10-21T00:00:00");
-  const dayMs = 1000*60*60*24;
-  const dS = Math.ceil((shashthi - now)/dayMs);
-  const dD = Math.ceil((dashami - now)/dayMs);
-  document.getElementById("cdShashthi").textContent = dS >= 0 ? dS + " days" : "Passed";
-  document.getElementById("cdDashami").textContent = dD >= 0 ? dD + " days" : "Passed";
+  const dayMs = 1000 * 60 * 60 * 24;
+  const dS = Math.ceil((shashthi - now) / dayMs);
+  const dD = Math.ceil((dashami - now) / dayMs);
+  document.getElementById("cdShashthi").textContent = dS >= 0 ? dS + "d" : "✓";
+  document.getElementById("cdDashami").textContent = dD >= 0 ? dD + "d" : "✓";
 }
 updateCountdown();
-
 render();
 </script>
 </body>
