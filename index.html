@@ -135,7 +135,6 @@
     color:#fff;
   }
   .filter-btn:hover, #installBtn:hover, #resetBtn:hover{opacity:0.85;}
-  #installBtn.hidden{display:none;}
   #resetBtn{
     border:1px solid #999;
     color:#555;
@@ -283,7 +282,7 @@
   <button class="filter-btn active" data-filter="all">All</button>
   <button class="filter-btn" data-filter="visited">Visited</button>
   <button class="filter-btn" data-filter="pending">Pending</button>
-  <button id="installBtn" class="hidden">Install App</button>
+  <button id="installBtn">Install App</button>
   <button id="resetBtn">Reset All</button>
 </div>
 
@@ -569,15 +568,19 @@ const installBtn = document.getElementById("installBtn");
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredPrompt = event;
-  installBtn.classList.remove("hidden");
+  installBtn.style.display = "inline-block";
 });
 
 installBtn.addEventListener("click", async () => {
-  if (!deferredPrompt) return;
+  if (!deferredPrompt) {
+    alert("Install prompt is not available yet. Try opening this page in a browser that supports PWA install, or use the browser menu > Install App.");
+    return;
+  }
+
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
   deferredPrompt = null;
-  installBtn.classList.add("hidden");
+  installBtn.style.display = "none";
 });
 
 if ("serviceWorker" in navigator) {
