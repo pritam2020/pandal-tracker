@@ -1,0 +1,13 @@
+{
+  "name": "pandal-tracker-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run server --prefix server\" \"npm run dev --prefix client\"",
+    "server": "npm run start --prefix server",
+    "client": "npm run dev --prefix client",
+    "seed": "node server/data/seed.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
