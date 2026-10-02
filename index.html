@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Durga Puja 2026 Pandal Tracker">
+<meta name="theme-color" content="#9b1b30">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pandal Tracker">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg">
+<link rel="apple-touch-icon" href="./icons/icon-192.svg">
 <title>Durga Puja 2026 Pandal Tracker</title>
 <style>
   :root{
@@ -556,6 +564,14 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     location.reload();
   }
 });
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((error) => {
+      console.error("Service worker registration failed:", error);
+    });
+  });
+}
 
 function updateCountdown(){
   const now = new Date();
