@@ -178,6 +178,8 @@
     align-items: center;
     gap: 10px;
     flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   #search {
@@ -442,13 +444,15 @@
     header { padding: 24px 16px 32px; }
     header h1 { font-size: 1.3rem; }
     .controls {
-      flex-wrap: wrap;
-      align-items: stretch;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 6px;
     }
-    #search { width: 100%; flex-basis: 100%; }
+    #search { min-width: 120px; }
     .filter-btn, #installBtn, #resetBtn {
-      flex: 1 1 calc(50% - 10px);
-      min-width: 110px;
+      flex: 0 0 auto;
+      min-width: 0;
     }
     .zone summary { font-size: 0.95rem; padding: 14px 14px; }
     .install-banner { flex-direction: column; align-items: flex-start; }
