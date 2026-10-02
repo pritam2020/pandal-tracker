@@ -37,15 +37,17 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Pandal Tracker API is running' });
 });
 
-app.use('/api/pandals', async (req, res, next) => {
-  await connectDB();
-  next();
-}, pandalRoutes);
+const withDB = async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
-app.use('/api/progress', async (req, res, next) => {
-  await connectDB();
-  next();
-}, progressRoutes);
+app.use('/api/pandals', withDB, pandalRoutes);
+app.use('/api/progress', withDB, progressRoutes);
 
 app.use((error, req, res, next) => {
   console.error(error);
