@@ -1,11 +1,7 @@
 {
   "version": 2,
   "framework": "vite",
-  "buildCommand": "npm run build --prefix client",
-  "outputDirectory": "client/dist",
   "installCommand": "npm install && npm install --prefix client",
-  "env": {
-    "MONGO_URI": "@mongo_uri",
-    "VITE_API_URL": "@vite_api_url"
-  }
+  "buildCommand": "npm run build --prefix client",
+  "outputDirectory": "client/dist"
 }
