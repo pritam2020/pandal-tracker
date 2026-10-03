@@ -82,10 +82,16 @@ function App() {
     });
 
     return filtered.reduce((acc, pandal) => {
-      if (!acc[pandal.zone?.name]) acc[pandal.zone?.name] = [];
-      acc[pandal.zone?.name].push(pandal);
-      return acc;
-    }, {});
+  const zoneName = pandal.zone?.name || 'Uncategorised';
+
+  if (!acc[zoneName]) {
+    acc[zoneName] = [];
+  }
+
+  acc[zoneName].push(pandal);
+
+  return acc;
+}, {});
   }, [pandals, progressMap, search, filter]);
 
   const totalCount = pandals.length;
