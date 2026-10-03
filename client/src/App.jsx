@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import Admin from './Admin';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -81,10 +82,16 @@ function App() {
     });
 
     return filtered.reduce((acc, pandal) => {
-      if (!acc[pandal.zone]) acc[pandal.zone] = [];
-      acc[pandal.zone].push(pandal);
-      return acc;
-    }, {});
+  const zoneName = pandal.zone?.name || 'Uncategorised';
+
+  if (!acc[zoneName]) {
+    acc[zoneName] = [];
+  }
+
+  acc[zoneName].push(pandal);
+
+  return acc;
+}, {});
   }, [pandals, progressMap, search, filter]);
 
   const totalCount = pandals.length;
@@ -268,4 +275,13 @@ function App() {
   );
 }
 
-export default App;
+const RootApp = () => {
+  if (window.location.pathname === '/admin') {
+    return <Admin />;
+  }
+
+  return <App />;
+};
+
+export default RootApp;
+

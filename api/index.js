@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const pandalRoutes = require('../server/routes/pandalRoutes');
 const progressRoutes = require('../server/routes/progressRoutes');
+const zoneRoutes = require('../server/routes/zoneRoutes');
 
 const app = express();
 
@@ -46,6 +47,7 @@ const withDB = async (req, res, next) => {
   }
 };
 
+app.use('/api/zones', withDB, zoneRoutes);
 app.use('/api/pandals', withDB, pandalRoutes);
 app.use('/api/progress', withDB, progressRoutes);
 
