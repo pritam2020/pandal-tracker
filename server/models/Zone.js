@@ -14,4 +14,4 @@ const zoneSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Zone', zoneSchema);.
+module.exports = mongoose.model('Zone', zoneSchema);
