@@ -47,6 +47,7 @@ const withDB = async (req, res, next) => {
   }
 };
 
+app.use('/api/zones', withDB, zoneRoutes);
 app.use('/api/pandals', withDB, pandalRoutes);
 app.use('/api/progress', withDB, progressRoutes);
 
