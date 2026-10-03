@@ -81,8 +81,8 @@ function App() {
     });
 
     return filtered.reduce((acc, pandal) => {
-      if (!acc[pandal.zone]) acc[pandal.zone] = [];
-      acc[pandal.zone].push(pandal);
+      if (!acc[pandal.zone?.name]) acc[pandal.zone?.name] = [];
+      acc[pandal.zone?.name].push(pandal);
       return acc;
     }, {});
   }, [pandals, progressMap, search, filter]);
