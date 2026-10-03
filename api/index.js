@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const pandalRoutes = require('../server/routes/pandalRoutes');
 const progressRoutes = require('../server/routes/progressRoutes');
+const zoneRoutes = require('../server/routes/zoneRoutes');
 
 const app = express();
 
