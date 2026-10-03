@@ -269,4 +269,13 @@ function App() {
   );
 }
 
-export { App as TrackerApp };
+const RootApp = () => {
+  if (window.location.pathname === '/admin') {
+    return <Admin />;
+  }
+
+  return <App />;
+};
+
+export default RootApp;
+
