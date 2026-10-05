@@ -1,4 +1,4 @@
-Durga Puja 2026 Pandal Tracker
+#Durga Puja 2026 Pandal Tracker
 
 A web-based tracker for exploring and managing Durga Puja pandals across Kolkata.
 
