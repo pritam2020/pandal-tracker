@@ -60,6 +60,8 @@ router.post('/', async (req, res) => {
       name,
       zone,
       maps = '',
+      latitude = null,
+      longitude = null,
       adminNote = '',
       uncertain = false,
     } = req.body;
