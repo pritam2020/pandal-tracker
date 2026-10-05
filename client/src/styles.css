@@ -610,4 +610,27 @@ footer {
     height: 80vh;
     border-radius: 0 0 18px 18px;
   }
+
+  .map-overlay-header {
+    padding: 8px 10px;
+  }
+
+  .map-overlay-header h2 {
+    font-size: 1rem;
+  }
+
+  .map-overlay-header p {
+    font-size: 0.7rem;
+  }
+
+  .map-close-button {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+  }
+
+  .near-me-button {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
 }
