@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Admin from './Admin';
+import MapOverlay from './components/MapOverlay';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -23,6 +24,7 @@ function formatCountdown(ms) {
 }
 
 function App() {
+  const [mapOpen, setMapOpen] = useState(false);
   const [pandals, setPandals] = useState([]);
   const [progressMap, setProgressMap] = useState({});
   const [search, setSearch] = useState('');
@@ -254,12 +256,23 @@ function App() {
                         onChange={(e) => updateNote(pandal._id, e.target.value)}
                         style={{ display: itemProgress.note ? 'block' : 'none' }}
                       />
-                      {pandal.maps ? (
-                        <a className="maps-btn" href={pandal.maps} target="_blank" rel="noreferrer">
+                     {pandal.maps ? (
+                        <a
+                          className="maps-btn"
+                          href={pandal.maps}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           📍 Maps
                         </a>
+                      ) : pandal.latitude != null && pandal.longitude != null ? (
+                        <span className="maps-btn">
+                          📍 Location available
+                        </span>
                       ) : (
-                        <span className="maps-btn maps-missing">📍 No link</span>
+                        <span className="maps-btn maps-missing">
+                          📍 No location
+                        </span>
                       )}
                     </div>
                   </div>
@@ -269,7 +282,32 @@ function App() {
           </details>
         ))}
       </main>
-
+      
+      <button
+      className="floating-map-button"
+      onClick={() => setMapOpen(true)}
+      aria-label="Open pandal map"
+    >
+      <span className="map-icon">
+        <svg
+          viewBox="0 0 48 48"
+          aria-hidden="true"
+        >
+          <circle cx="24" cy="24" r="22" />
+          <path d="M16 34L29 13L32 27L16 34Z" />
+        </svg>
+      </span>
+    
+      <span>Map</span>
+    </button>
+        
+        {mapOpen && (
+          <MapOverlay
+            pandals={pandals}
+            onClose={() => setMapOpen(false)}
+          />
+        )}
+      
       <footer>📍 Progress saved automatically • MongoDB-backed</footer>
     </>
   );

@@ -60,6 +60,8 @@ router.post('/', async (req, res) => {
       name,
       zone,
       maps = '',
+      latitude = null,
+      longitude = null,
       adminNote = '',
       uncertain = false,
     } = req.body;
@@ -90,10 +92,61 @@ router.post('/', async (req, res) => {
       });
     }
 
+    const hasMapLink = Boolean(maps && maps.trim());
+
+    const hasLatitude =
+      latitude !== null &&
+      latitude !== undefined &&
+      latitude !== '';
+    
+    const hasLongitude =
+      longitude !== null &&
+      longitude !== undefined &&
+      longitude !== '';
+    
+    if (!hasMapLink && !hasLatitude && !hasLongitude) {
+      return res.status(400).json({
+        message: 'Please provide either a map link or both latitude and longitude',
+      });
+    }
+    
+    if (hasLatitude !== hasLongitude) {
+      return res.status(400).json({
+        message: 'Both latitude and longitude are required',
+      });
+    }
+    
+    const parsedLatitude = hasLatitude ? Number(latitude) : null;
+    const parsedLongitude = hasLongitude ? Number(longitude) : null;
+    
+    if (
+      hasLatitude &&
+      (!Number.isFinite(parsedLatitude) ||
+        parsedLatitude < -90 ||
+        parsedLatitude > 90)
+    ) {
+      return res.status(400).json({
+        message: 'Latitude must be between -90 and 90',
+      });
+    }
+    
+    if (
+      hasLongitude &&
+      (!Number.isFinite(parsedLongitude) ||
+        parsedLongitude < -180 ||
+        parsedLongitude > 180)
+    ) {
+      return res.status(400).json({
+        message: 'Longitude must be between -180 and 180',
+      });
+    }
+    
     const pandal = await Pandal.create({
       name: name.trim(),
       zone,
       maps: maps.trim(),
+      latitude: parsedLatitude,
+      longitude: parsedLongitude,
       adminNote: adminNote.trim(),
       uncertain: Boolean(uncertain),
     });
@@ -125,6 +178,8 @@ router.put('/:id', async (req, res) => {
       name,
       zone,
       maps = '',
+      latitude = null,
+      longitude = null,
       adminNote = '',
       uncertain = false,
     } = req.body;
@@ -155,6 +210,55 @@ router.put('/:id', async (req, res) => {
       });
     }
 
+    const hasMapLink = Boolean(maps && maps.trim());
+
+    const hasLatitude =
+      latitude !== null &&
+      latitude !== undefined &&
+      latitude !== '';
+    
+    const hasLongitude =
+      longitude !== null &&
+      longitude !== undefined &&
+      longitude !== '';
+    
+    if (!hasMapLink && !hasLatitude && !hasLongitude) {
+      return res.status(400).json({
+        message: 'Please provide either a map link or both latitude and longitude',
+      });
+    }
+    
+    if (hasLatitude !== hasLongitude) {
+      return res.status(400).json({
+        message: 'Both latitude and longitude are required',
+      });
+    }
+    
+    const parsedLatitude = hasLatitude ? Number(latitude) : null;
+    const parsedLongitude = hasLongitude ? Number(longitude) : null;
+    
+    if (
+      hasLatitude &&
+      (!Number.isFinite(parsedLatitude) ||
+        parsedLatitude < -90 ||
+        parsedLatitude > 90)
+    ) {
+      return res.status(400).json({
+        message: 'Latitude must be between -90 and 90',
+      });
+    }
+    
+    if (
+      hasLongitude &&
+      (!Number.isFinite(parsedLongitude) ||
+        parsedLongitude < -180 ||
+        parsedLongitude > 180)
+    ) {
+      return res.status(400).json({
+        message: 'Longitude must be between -180 and 180',
+      });
+    }
+
     const pandal = await Pandal.findByIdAndUpdate(
       id,
       {
@@ -163,6 +267,8 @@ router.put('/:id', async (req, res) => {
         maps: maps.trim(),
         adminNote: adminNote.trim(),
         uncertain: Boolean(uncertain),
+        latitude: parsedLatitude,
+        longitude: parsedLongitude,
       },
       {
         new: true,
