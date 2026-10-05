@@ -22,19 +22,28 @@ const userIcon = L.divIcon({
   iconAnchor: [12, 12],
 });
 
-const pandalIcon = L.divIcon({
-  className: 'pandal-location-marker',
-  html: `
-    <div class="pandal-location-pin">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 22s7-6.1 7-12A7 7 0 0 0 5 10c0 5.9 7 12 7 12Z" />
-        <circle cx="12" cy="10" r="2.5" />
-      </svg>
-    </div>
-  `,
-  iconSize: [34, 40],
-  iconAnchor: [17, 40],
-});
+const pandalIcon = (visited) =>
+  L.divIcon({
+    className: 'pandal-location-marker',
+    html: `
+      <div class="pandal-marker-wrapper">
+        <div class="pandal-location-pin">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 22s7-6.1 7-12A7 7 0 0 0 5 10c0 5.9 7 12 7 12Z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+        </div>
+
+        ${
+          visited
+            ? '<span class="pandal-visited-badge">✓</span>'
+            : ''
+        }
+      </div>
+    `,
+    iconSize: [38, 44],
+    iconAnchor: [19, 44],
+  });
 
 function LocationController({ location }) {
   const map = useMap();
@@ -175,12 +184,14 @@ export default function PandalMap({
 
           return (
             <Marker
-              key={pandal._id}
-              position={[
-                pandal.latitude,
-                pandal.longitude,
-              ]}
-              icon={pandalIcon}
+                key={pandal._id}
+                position={[
+                  pandal.latitude,
+                  pandal.longitude,
+                ]}
+                icon={pandalIcon(
+                  Boolean(progressMap[pandal._id]?.visited)
+                )}
               eventHandlers={{
                 click: () => setSelectedPandal(pandal),
               }}
