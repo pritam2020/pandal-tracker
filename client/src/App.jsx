@@ -266,7 +266,21 @@ function App() {
             <summary>
               <span>{zone}</span>
               <span className="zone-count">
-                {zonePandals.filter((p) => Boolean(progressMap[p._id]?.visited)).length}/{zonePandals.length}
+                {(() => {
+                  const allZonePandals = pandals.filter(
+                    (pandal) =>
+                      (pandal.zone?.name || 'Uncategorised') === zone
+                  );
+              
+                  const visitedZonePandals =
+                    allZonePandals.filter((pandal) =>
+                      Boolean(
+                        progressMap[pandal._id]?.visited
+                      )
+                    );
+              
+                  return `${visitedZonePandals.length}/${allZonePandals.length}`;
+                })()}
               </span>
             </summary>
             <div className="zone-body">
@@ -352,6 +366,8 @@ function App() {
         {mapOpen && (
           <MapOverlay
             pandals={pandals}
+            progressMap={progressMap}
+            onToggleVisited={toggleVisited}
             onClose={() => setMapOpen(false)}
           />
         )}
