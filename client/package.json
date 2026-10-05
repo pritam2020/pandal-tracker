@@ -11,8 +11,8 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "leaflet": "^1.x",
-    "react-leaflet": "^4.x"
+    "leaflet": "1.9.4",
+    "react-leaflet": "4.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
