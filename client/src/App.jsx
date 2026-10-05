@@ -29,6 +29,7 @@ function App() {
   const [progressMap, setProgressMap] = useState({});
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
+  const [zoneFilter, setZoneFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
 
@@ -71,31 +72,64 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
+  const zones = useMemo(() => {
+    return [
+      ...new Set(
+        pandals.map(
+          (pandal) => pandal.zone?.name || 'Uncategorised'
+        )
+      ),
+    ].sort();
+  }, [pandals]);
+
   const groupedPandals = useMemo(() => {
-    const filtered = pandals.filter((pandal) => {
-      const matchesSearch = pandal.name.toLowerCase().includes(search.toLowerCase());
-      const visited = Boolean(progressMap[pandal._id]?.visited);
-      const matchesFilter =
-        filter === 'all' ||
-        (filter === 'visited' && visited) ||
-        (filter === 'pending' && !visited);
+  const filtered = pandals.filter((pandal) => {
+    const matchesSearch = pandal.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
-      return matchesSearch && matchesFilter;
-    });
+    const visited = Boolean(
+      progressMap[pandal._id]?.visited
+    );
 
-    return filtered.reduce((acc, pandal) => {
-  const zoneName = pandal.zone?.name || 'Uncategorised';
+    const matchesFilter =
+      filter === 'all' ||
+      (filter === 'visited' && visited) ||
+      (filter === 'pending' && !visited);
 
-  if (!acc[zoneName]) {
-    acc[zoneName] = [];
-  }
+    const zoneName =
+      pandal.zone?.name || 'Uncategorised';
 
-  acc[zoneName].push(pandal);
+    const matchesZone =
+      zoneFilter === 'all' ||
+      zoneName === zoneFilter;
 
-  return acc;
-}, {});
-  }, [pandals, progressMap, search, filter]);
+    return (
+      matchesSearch &&
+      matchesFilter &&
+      matchesZone
+    );
+  });
 
+  return filtered.reduce((acc, pandal) => {
+    const zoneName =
+      pandal.zone?.name || 'Uncategorised';
+
+    if (!acc[zoneName]) {
+      acc[zoneName] = [];
+    }
+
+    acc[zoneName].push(pandal);
+
+    return acc;
+  }, {});
+}, [
+  pandals,
+  progressMap,
+  search,
+  filter,
+  zoneFilter,
+]);
   const totalCount = pandals.length;
   const visitedCount = pandals.filter((pandal) => Boolean(progressMap[pandal._id]?.visited)).length;
   const percent = totalCount ? Math.round((visitedCount / totalCount) * 100) : 0;
@@ -210,6 +244,20 @@ function App() {
         >
           ⊕ Pending
         </button>
+        <select
+          className="zone-filter"
+          value={zoneFilter}
+          onChange={(e) => setZoneFilter(e.target.value)}
+          aria-label="Filter by zone"
+        >
+          <option value="all">All Zones</option>
+        
+          {zones.map((zone) => (
+            <option key={zone} value={zone}>
+              {zone}
+            </option>
+          ))}
+        </select>
       </div>
 
       <main>
