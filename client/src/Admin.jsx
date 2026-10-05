@@ -7,6 +7,8 @@ const emptyPandal = {
   name: '',
   zone: '',
   maps: '',
+  latitude: '',
+  longitude: '',
   adminNote: '',
   uncertain: false,
 };
@@ -188,6 +190,37 @@ function Admin() {
       setError('Please select a zone');
       return;
     }
+    
+    const hasMapLink = pandalForm.maps.trim() !== '';
+    const hasLatitude = pandalForm.latitude !== '';
+    const hasLongitude = pandalForm.longitude !== '';
+    
+    if (!hasMapLink && !hasLatitude && !hasLongitude) {
+      setError(
+        'Please provide either a map link or both latitude and longitude'
+      );
+      return;
+    }
+    
+    if (hasLatitude !== hasLongitude) {
+      setError('Both latitude and longitude are required');
+      return;
+    }
+    
+    if (hasLatitude && hasLongitude) {
+      const latitude = Number(pandalForm.latitude);
+      const longitude = Number(pandalForm.longitude);
+    
+      if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) {
+        setError('Latitude must be between -90 and 90');
+        return;
+      }
+    
+      if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+        setError('Longitude must be between -180 and 180');
+        return;
+      }
+    }
 
     try {
       setError('');
@@ -227,16 +260,20 @@ function Admin() {
     }
   };
 
+  
+  
   const editPandal = (pandal) => {
     setEditingPandalId(pandal._id);
 
     setPandalForm({
-      name: pandal.name || '',
-      zone: pandal.zone?._id || '',
-      maps: pandal.maps || '',
-      adminNote: pandal.adminNote || '',
-      uncertain: Boolean(pandal.uncertain),
-    });
+    name: pandal.name || '',
+    zone: pandal.zone?._id || '',
+    maps: pandal.maps || '',
+    latitude: pandal.latitude ?? '',
+    longitude: pandal.longitude ?? '',
+    adminNote: pandal.adminNote || '',
+    uncertain: Boolean(pandal.uncertain),
+  });
 
     window.scrollTo({
       top: 0,
@@ -483,6 +520,42 @@ function Admin() {
                   placeholder="https://maps.google.com/..."
                 />
               </label>
+              
+              <div className="location-help">
+                Provide either a map link or both latitude and longitude.
+              </div>
+              
+              <div className="coordinate-grid">
+                <label>
+                  Latitude
+              
+                  <input
+                    type="number"
+                    name="latitude"
+                    value={pandalForm.latitude}
+                    onChange={handlePandalChange}
+                    placeholder="e.g. 22.5025"
+                    min="-90"
+                    max="90"
+                    step="any"
+                  />
+                </label>
+              
+                <label>
+                  Longitude
+              
+                  <input
+                    type="number"
+                    name="longitude"
+                    value={pandalForm.longitude}
+                    onChange={handlePandalChange}
+                    placeholder="e.g. 88.3590"
+                    min="-180"
+                    max="180"
+                    step="any"
+                  />
+                </label>
+              </div>
 
               <label>
                 Admin note
