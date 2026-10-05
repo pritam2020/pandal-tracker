@@ -284,13 +284,22 @@ function App() {
       </main>
       
       <button
-          className="floating-map-button"
-          onClick={() => setMapOpen(true)}
-          aria-label="Open pandal map"
+      className="floating-map-button"
+      onClick={() => setMapOpen(true)}
+      aria-label="Open pandal map"
+    >
+      <span className="map-icon">
+        <svg
+          viewBox="0 0 48 48"
+          aria-hidden="true"
         >
-          <span>📍</span>
-          <span>Map</span>
-        </button>
+          <circle cx="24" cy="24" r="22" />
+          <path d="M16 34L29 13L32 27L16 34Z" />
+        </svg>
+      </span>
+    
+      <span>Map</span>
+    </button>
         
         {mapOpen && (
           <MapOverlay
