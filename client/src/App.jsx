@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Admin from './Admin';
+import MapOverlay from './components/MapOverlay';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -23,6 +24,7 @@ function formatCountdown(ms) {
 }
 
 function App() {
+  const [mapOpen, setMapOpen] = useState(false);
   const [pandals, setPandals] = useState([]);
   const [progressMap, setProgressMap] = useState({});
   const [search, setSearch] = useState('');
@@ -269,7 +271,23 @@ function App() {
           </details>
         ))}
       </main>
-
+      
+      <button
+          className="floating-map-button"
+          onClick={() => setMapOpen(true)}
+          aria-label="Open pandal map"
+        >
+          <span>📍</span>
+          <span>Map</span>
+        </button>
+        
+        {mapOpen && (
+          <MapOverlay
+            pandals={pandals}
+            onClose={() => setMapOpen(false)}
+          />
+        )}
+      
       <footer>📍 Progress saved automatically • MongoDB-backed</footer>
     </>
   );
