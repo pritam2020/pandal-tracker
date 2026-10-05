@@ -256,12 +256,23 @@ function App() {
                         onChange={(e) => updateNote(pandal._id, e.target.value)}
                         style={{ display: itemProgress.note ? 'block' : 'none' }}
                       />
-                      {pandal.maps ? (
-                        <a className="maps-btn" href={pandal.maps} target="_blank" rel="noreferrer">
+                     {pandal.maps ? (
+                        <a
+                          className="maps-btn"
+                          href={pandal.maps}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           📍 Maps
                         </a>
+                      ) : pandal.latitude != null && pandal.longitude != null ? (
+                        <span className="maps-btn">
+                          📍 Location available
+                        </span>
                       ) : (
-                        <span className="maps-btn maps-missing">📍 No link</span>
+                        <span className="maps-btn maps-missing">
+                          📍 No location
+                        </span>
                       )}
                     </div>
                   </div>
