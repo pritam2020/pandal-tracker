@@ -366,6 +366,7 @@ function App() {
         {mapOpen && (
           <MapOverlay
             pandals={pandals}
+            onToggleVisited={toggleVisited}
             progressMap={progressMap}
             onClose={() => setMapOpen(false)}
           />
