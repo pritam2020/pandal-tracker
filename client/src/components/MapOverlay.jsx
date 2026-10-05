@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import PandalMap from './PandalMap';
 
 export default function MapOverlay({ pandals, onClose }) {
   const [userLocation, setUserLocation] = useState(null);
-  const [locationStatus, setLocationStatus] = useState('loading');
+  const [locationStatus, setLocationStatus] = useState('idle');
 
-  useEffect(() => {
+  const findNearMe = () => {
     if (!navigator.geolocation) {
       setLocationStatus('unsupported');
       return;
     }
+
+    setLocationStatus('loading');
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -30,7 +32,7 @@ export default function MapOverlay({ pandals, onClose }) {
         maximumAge: 60000,
       }
     );
-  }, []);
+  };
 
   return (
     <div className="map-overlay">
@@ -43,25 +45,49 @@ export default function MapOverlay({ pandals, onClose }) {
           ×
         </button>
 
-        <div>
+        <div className="map-overlay-title">
           <h2>Pandal Map</h2>
+
+          {locationStatus === 'idle' && (
+            <p>Explore pandals on the map</p>
+          )}
 
           {locationStatus === 'loading' && (
             <p>Finding your location...</p>
           )}
 
           {locationStatus === 'success' && (
-            <p>Your current location</p>
+            <p>Showing pandals near you</p>
           )}
 
           {locationStatus === 'denied' && (
-            <p>Location unavailable</p>
+            <p>Location unavailable — map still works</p>
           )}
 
           {locationStatus === 'unsupported' && (
             <p>Location is not supported</p>
           )}
         </div>
+
+        <button
+          className={`near-me-button ${
+            locationStatus === 'success' ? 'active' : ''
+          }`}
+          onClick={findNearMe}
+          disabled={locationStatus === 'loading'}
+        >
+          <span className="near-me-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+              <circle cx="12" cy="12" r="8" />
+            </svg>
+          </span>
+
+          <span>
+            {locationStatus === 'loading' ? 'Finding...' : 'Near Me'}
+          </span>
+        </button>
       </div>
 
       <div className="map-container">
