@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import PandalMap from './PandalMap';
 
-export default function MapOverlay({ pandals, onClose }) {
+export default function MapOverlay({
+  pandals,
+  progressMap,
+  onToggleVisited,
+  onClose,
+}) {
   const [userLocation, setUserLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState('idle');
 
@@ -85,7 +90,9 @@ export default function MapOverlay({ pandals, onClose }) {
           </span>
 
           <span>
-            {locationStatus === 'loading' ? 'Finding...' : 'Near Me'}
+            {locationStatus === 'loading'
+              ? 'Finding...'
+              : 'Near Me'}
           </span>
         </button>
       </div>
@@ -94,6 +101,8 @@ export default function MapOverlay({ pandals, onClose }) {
         <PandalMap
           pandals={pandals}
           userLocation={userLocation}
+          progressMap={progressMap}
+          onToggleVisited={onToggleVisited}
         />
       </div>
     </div>
