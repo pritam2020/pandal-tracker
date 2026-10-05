@@ -7,25 +7,43 @@ import {
 } from 'react-leaflet';
 
 import L from 'leaflet';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import 'leaflet/dist/leaflet.css';
 
-const defaultCenter = [22.5726, 88.3639]; // Kolkata
+const defaultCenter = [22.5726, 88.3639];
 
 const userIcon = L.divIcon({
   className: 'user-location-marker',
-  html: '<div class="user-location-dot"></div>',
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
+  html: `
+    <div class="user-location-dot"></div>
+  `,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
 });
 
-const pandalIcon = L.divIcon({
-  className: 'pandal-location-marker',
-  html: '<div class="pandal-location-pin">📍</div>',
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
-});
+const pandalIcon = (visited) =>
+  L.divIcon({
+    className: 'pandal-location-marker',
+    html: `
+      <div class="pandal-marker-wrapper">
+        <div class="pandal-location-pin">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 22s7-6.1 7-12A7 7 0 0 0 5 10c0 5.9 7 12 7 12Z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+        </div>
+
+        ${
+          visited
+            ? '<span class="pandal-visited-badge">✓</span>'
+            : ''
+        }
+      </div>
+    `,
+    iconSize: [38, 44],
+    iconAnchor: [19, 44],
+  });
 
 function LocationController({ location }) {
   const map = useMap();
@@ -35,7 +53,10 @@ function LocationController({ location }) {
       return;
     }
 
-    map.setView([location.latitude, location.longitude], 14);
+    map.setView(
+      [location.latitude, location.longitude],
+      14
+    );
   }, [location, map]);
 
   return null;
@@ -53,15 +74,36 @@ function distanceInKm(lat1, lon1, lat2, lon2) {
       Math.cos((lat2 * Math.PI) / 180) *
       Math.sin(dLon / 2) ** 2;
 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
 
   return earthRadius * c;
+}
+
+function formatDistance(distance) {
+  if (distance == null) {
+    return null;
+  }
+
+  if (distance < 1) {
+    return `${Math.round(distance * 1000)} m`;
+  }
+
+  return `${distance.toFixed(1)} km`;
 }
 
 export default function PandalMap({
   pandals,
   userLocation,
+  progressMap,
+  onToggleVisited,
 }) {
+  const [selectedPandal, setSelectedPandal] = useState(null);
+
   const mappedPandals = pandals
     .filter(
       (pandal) =>
@@ -89,8 +131,8 @@ export default function PandalMap({
       };
     })
     .sort((a, b) => {
-      if (a.distance === null) return 1;
-      if (b.distance === null) return -1;
+      if (a.distance == null) return 1;
+      if (b.distance == null) return -1;
 
       return a.distance - b.distance;
     });
@@ -99,68 +141,175 @@ export default function PandalMap({
     ? [userLocation.latitude, userLocation.longitude]
     : defaultCenter;
 
+  const selectedProgress = selectedPandal
+    ? progressMap[selectedPandal._id] || {
+        visited: false,
+        note: '',
+      }
+    : null;
+
   return (
-    <MapContainer
-      center={center}
-      zoom={13}
-      className="pandal-map"
-      zoomControl={true}
-    >
-      <TileLayer
-        attribution='&copy; OpenStreetMap contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <div className="pandal-map-wrapper">
+      <MapContainer
+        center={center}
+        zoom={13}
+        className="pandal-map"
+        zoomControl={true}
+      >
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-      <LocationController location={userLocation} />
+        <LocationController location={userLocation} />
 
-      {userLocation && (
-        <Marker
-          position={[
-            userLocation.latitude,
-            userLocation.longitude,
-          ]}
-          icon={userIcon}
-        >
-          <Popup>
-            <strong>Your current location</strong>
-          </Popup>
-        </Marker>
-      )}
+        {userLocation && (
+          <Marker
+            position={[
+              userLocation.latitude,
+              userLocation.longitude,
+            ]}
+            icon={userIcon}
+          >
+            <Popup>
+              <strong>Your current location</strong>
+            </Popup>
+          </Marker>
+        )}
 
-      {mappedPandals.map((pandal) => (
-        <Marker
-          key={pandal._id}
-          position={[pandal.latitude, pandal.longitude]}
-          icon={pandalIcon}
-        >
-          <Popup>
-            <strong>{pandal.name}</strong>
+        {mappedPandals.map((pandal) => {
+          const visited = Boolean(
+            progressMap[pandal._id]?.visited
+          );
 
-            {pandal.zone?.name && (
-              <div>{pandal.zone.name}</div>
-            )}
+          return (
+            <Marker
+                key={pandal._id}
+                position={[
+                  pandal.latitude,
+                  pandal.longitude,
+                ]}
+                icon={pandalIcon(
+                  Boolean(progressMap[pandal._id]?.visited)
+                )}
+              eventHandlers={{
+                click: () => setSelectedPandal(pandal),
+              }}
+            >
+              <Popup>
+                <div className="map-popup">
+                  <strong>{pandal.name}</strong>
 
-            {pandal.distance !== null && (
-              <div>
-                {pandal.distance < 1
-                  ? `${Math.round(pandal.distance * 1000)} m`
-                  : `${pandal.distance.toFixed(1)} km`}
-                {' '}away
-              </div>
-            )}
+                  {pandal.zone?.name && (
+                    <div className="map-popup-zone">
+                      {pandal.zone.name}
+                    </div>
+                  )}
 
-            {pandal.maps && (
-              <a
-                href={pandal.maps}
-                target="_blank"
-                rel="noreferrer"
+                  {pandal.distance != null && (
+                    <div className="map-popup-distance">
+                      {formatDistance(pandal.distance)} away
+                    </div>
+                  )}
+
+                  <div className="map-popup-status">
+                    {visited ? '✓ Visited' : '○ Pending'}
+                  </div>
+
+                  <button
+                    className="map-visit-button"
+                    onClick={() =>
+                      onToggleVisited(
+                        pandal._id,
+                        !visited
+                      )
+                    }
+                  >
+                    {visited
+                      ? 'Mark as pending'
+                      : 'Mark as visited'}
+                  </button>
+
+                  {pandal.maps && (
+                    <a
+                      className="map-popup-link"
+                      href={pandal.maps}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open in Maps →
+                    </a>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
+      </MapContainer>
+
+      {selectedPandal && (
+        <div className="map-selected-card">
+          <button
+            className="map-selected-close"
+            onClick={() => setSelectedPandal(null)}
+            aria-label="Close pandal details"
+          >
+            ×
+          </button>
+
+          <div className="map-selected-content">
+            <div>
+              <h3>{selectedPandal.name}</h3>
+
+              {selectedPandal.zone?.name && (
+                <p>{selectedPandal.zone.name}</p>
+              )}
+
+              {selectedPandal.distance != null && (
+                <p>
+                  {formatDistance(
+                    selectedPandal.distance
+                  )}{' '}
+                  away
+                </p>
+              )}
+
+              {selectedProgress?.note && (
+                <p className="map-selected-note">
+                  📝 {selectedProgress.note}
+                </p>
+              )}
+            </div>
+
+            <div className="map-selected-actions">
+              <button
+                className="map-selected-visit"
+                onClick={() =>
+                  onToggleVisited(
+                    selectedPandal._id,
+                    !selectedProgress.visited
+                  )
+                }
               >
-                Open Maps
-              </a>
-            )}
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+                {selectedProgress.visited
+                  ? '✓ Visited'
+                  : 'Mark visited'}
+              </button>
+
+              {selectedPandal.maps && (
+                <a
+                  href={selectedPandal.maps}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="map-selected-maps"
+                >
+                  📍 Open in Maps
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
